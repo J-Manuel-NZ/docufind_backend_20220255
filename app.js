@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://justinmanuelnz:qjdybk1wto6eKlDx@docufind.mpepoji.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://justinmanuelnz:qjdybk1wto6eKlDx@docufind.mpepoji.mongodb.net/NODE-API?retryWrites=true&w=majority";
 
 var app = express();
 
