@@ -4,8 +4,7 @@ block content
   h1 Documents
   each doc in docs
     .doc
-      h2= hello
-      p= doc.description
-      //- p.date Posted on #{doc.date.toDateString()}
+      h2= "title: " + doc.title
+      p= "descr:" + doc.description
   
 

@@ -6,7 +6,7 @@ const Document = require('../models/document');
 router.get('/', async (req, res, next) => {
   try {
     const documents = await Document.find({});
-    res.render('index', { documents });
+    res.render('index', { docs: documents });
   } catch (error) {
     console.log(error);
       res.render('error', {message: 'Could not find documents'});
@@ -19,11 +19,11 @@ router.get('/add-document', (req, res) => {
 
 // Create a new document
 router.post('/', async (req, res, next) => {
-  const { title, description, documentUrl, id} = req.body;
+  const { title, description, documentFile, id} = req.body;
   var newDocument = new Document({
     title,
     description,
-    // documentUrl,
+    documentfile,
     id,
     date: new Date()
   });
