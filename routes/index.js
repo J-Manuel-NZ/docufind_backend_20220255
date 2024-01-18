@@ -1,16 +1,34 @@
+const mongoose =require('mongoose');
 const express = require('express');
 const router = express.Router();
 const Document = require('../models/document');
+// Multer Setup
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './files')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now()
+    cb(null, uniqueSuffix + '-' + file.originalname)
+  },
+})
+
+require("../models/document.js")
+const DocumentSchema = mongoose.model("Document")
+const upload = multer({ storage: storage })
+
+// allow files to be accessible
+router.use("/files", express.static("files"));
 
 // Display all documents
-router.get('/', async (req, res, next) => {
+router.get('/get-files', async (req, res, next) => {
   try {
-    const documents = await Document.find({});
-    res.render('index', { docs: documents });
-  } catch (error) {
-    console.log(error);
-      res.render('error', {message: 'Could not find documents'});
-  }
+    DocumentSchema.find({}).then((data) => {
+      res.send({status: "ok", data: data});
+    })
+  } catch (error) {}
 });
 
 router.get('/add-document', (req, res) => {
@@ -18,24 +36,21 @@ router.get('/add-document', (req, res) => {
 });
 
 // Create a new document
-router.post('/', async (req, res, next) => {
-  const { title, description, documentFile, id} = req.body;
-  var newDocument = new Document({
-    title,
-    description,
-    documentfile,
-    id,
-    date: new Date()
-  });
-
-try {
-  await newDocument.save();
-  res.redirect('/');
-} catch (error) {
-  console.log(error);
-  res.render('error', {message: 'Could not create document'});
-}
-});
+router.post("/upload-files", upload.single("file"), async(req, res) => {
+  console.log(req.file)
+  const title = req.body.title;
+  const description = req.body.description;
+  const category = req.body.category;
+  const documentFile = req.file.filename;
+  const notes = req.body.notes;
+  const id = req.body.id;
+  try {
+    await DocumentSchema.create({title: title, description: description, category: category, documentFile: documentFile, notes: notes, id: id});
+    res.send({status: "ok"});
+  } catch (error) {
+    res.send({status: error});
+  }
+})
 
 // View a single document by title
 router.get('/:title', async (req, res, next) => {
