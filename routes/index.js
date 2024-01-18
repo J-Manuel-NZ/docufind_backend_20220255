@@ -2,6 +2,7 @@ const mongoose =require('mongoose');
 const express = require('express');
 const router = express.Router();
 const Document = require('../models/document');
+const fs = require('fs');
 // Multer Setup
 const multer  = require('multer')
 
@@ -75,10 +76,21 @@ router.post('/:id', async (req, res, next) => {
 })
 
 // Delete a single document
-router.get('/:id/delete', async (req, res, next) => {
+router.delete('/:id/delete', async (req, res, next) => {
+  console.log(req.params.id)
   try {
+    const document = await Document.findById(req.params.id);
+    if (!document) {
+      return res.render('error', {message: 'Document not found'});
+    }
     await Document.findByIdAndDelete(req.params.id);
-    res.redirect('/');
+    fs.unlink('files/' + document.documentFile, (err) => {
+      if (err) {
+          throw err;
+      }
+      console.log("Delete File successfully.");
+      res.send({status: "ok"});
+    });
   } catch (error) {
     console.log(error);
     res.render('error', {message: 'Could not delete document'});
