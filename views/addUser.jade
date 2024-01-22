@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1 Add user
+
+    form(action="/sign-in", method="POST")
+        div
+            label(for="email") Email:
+            input(type="text", id="email", name="email", required)
+        div
+            label(for="password") Password:
+            input(type="text", id="password", name="password", required)
+
+        button(type="submit") Submit
