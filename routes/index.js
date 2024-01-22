@@ -65,10 +65,19 @@ router.get('/:title', async (req, res, next) => {
 });
 
 // Update a single document 
-router.post('/:id', async (req, res, next) => {
+router.put('/update/:id', async (req, res, next) => {
   try {
-    await Document.findOneAndUpdate(req.params.title, {$set: req.body});
-    res.redirect('/');
+    const document = await Document.findById(req.params.id);
+    if (!document) {
+      return res.render('error', {message: 'Document not found'});
+    }
+    await Document.findOneAndUpdate(document, {
+      title: req.body.title, 
+      category: req.body.category,
+      description: req.body.description,
+      id: req.body.id,
+    }, { new: true });
+    res.send({status: "ok"});
   } catch (error) {
     console.log(error);
     res.render('error', {message: 'Could not update document'});
