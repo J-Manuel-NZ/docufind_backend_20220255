@@ -1,9 +1,17 @@
 var mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const { Timestamp } = require('mongodb');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
+    name: {
+        type: String,
+        required: [true, "Please provide name"],
+        unique: false,
+    },
+    employeeID: {
+        type: String,
+        required: [false],
+        unique: true,
+    },
     email: {
         type: String,
         required: [true, "Please provide email"],
@@ -17,20 +25,7 @@ var userSchema = new Schema({
         type: Boolean,
         default: false,
     },
-}, {timestamps: true});
+}, {collection: 'users'});
 
-userSchema.pre("save", async function(next) {
-    const user = this;
-    if (!user.isModified("password")) return next();
-    try {
-        const salt = await bcrypt.genSalt();
-        user.password = await bcrypt.hash(user.password, salt);
-        next();
-    } catch (error) {
-        return next(error);
-    }
-});
-
-
-var Document = mongoose.model('User', userSchema);
+var User = mongoose.model('User', userSchema);
 module.exports = User;
