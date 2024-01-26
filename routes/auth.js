@@ -17,8 +17,6 @@ router.post('/sign-in', async (req, res) => {
 
     // Check if the user exists
     const existingUser = await User.findOne({email: email})
-    console.log(existingUser.password)
-    console.log(password)
     if (existingUser) {
         try {
             // const passwordCorrect = await bcrypt.compare(password, existingUser.password);
@@ -37,6 +35,9 @@ router.post('/sign-in', async (req, res) => {
         } catch (error) {
             console.error('Error comparing passwords:', error);
         }
+    } else {
+        res.send({status: "User does not exist"});
+        console.log('User does not exist');
     }
 });
 
