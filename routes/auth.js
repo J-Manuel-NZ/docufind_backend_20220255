@@ -57,8 +57,7 @@ router.post('/register', async (req, res) => {
     } else {
         try {
             console.log('Database connection state:', mongoose.connection.readyState);
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            await UserSchema.create({name: name, employeeID: id, email: email, password: hashedPassword, isAdmin: admin});
+            await UserSchema.create({name: name, employeeID: id, email: email, password: password, isAdmin: admin});
             res.send({status: "User does not exist, created new user"});
         } catch (error) {
             res.send({status: error});
